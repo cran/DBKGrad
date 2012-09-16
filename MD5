@@ -1,0 +1,8 @@
+af3c8163c510a1b9f10e7413a59b267d *DESCRIPTION
+df390c53434517b304ac5db487184641 *NAMESPACE
+51adb50917faa152c64a27685e9da28a *R/dbkGrad.R
+c85b646bb3c9d5d78870b775826333b6 *data/Sicily2008M.rda
+81543b17eab8fdefd37b1ca5f18f4850 *man/DBKGrad-package.Rd
+90f2bddeafd9b80c8c904fe341b4ca14 *man/Sicily2008M.Rd
+8c1d5b2b414b46f32667f08ebc4b3889 *man/dbkGrad.Rd
+8529d7ed88c636ebcdc95df8894290c0 *man/plot.dbkGrad.Rd
