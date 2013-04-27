@@ -1,7 +1,7 @@
 \name{DBKGrad-package}
 \alias{DBKGrad-package}
 \docType{package}
-\title{DBKGrad - Discrete Beta Kernel Graduation.}
+\title{DBKGrad - Discrete Beta Kernel Graduation}
 \description{
 This package allows for nonparametric graduation of mortality rates using the discrete beta kernel estimator in both its fixed (Mazza and Punzo, 2011) and adaptive (Mazza and Punzo, 2013, in press) variants.
 }
@@ -43,5 +43,5 @@ Maintainer: Angelo Mazza <a.mazza@unict.it>
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{dbkGrad}}, \code{\link{plot}}, \code{\link{Sicily2008M}}
+\code{\link{dbkGrad}}, \code{\link[DBKGrad:plot.dbkGrad]{plot}}, \code{\link{ItalyM}}
 }

@@ -1,1 +1,11 @@
 exportPattern("^[[:alpha:]]+")
+S3method(plot, dbkGrad)
+S3method(print, dbkGrad)
+S3method(residuals, dbkGrad)
+
+importFrom(minpack.lm,nls.lm.control,nls.lm)
+importFrom(SDD,ADF)
+importFrom(TSA, acf)
+
+importFrom(lattice,levelplot)
+

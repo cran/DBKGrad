@@ -2,6 +2,7 @@
 \alias{dbkGrad}
 \alias{print.dbkGrad}
 \alias{as.data.frame.dbkGrad}
+\alias{residuals.dbkGrad}
 \title{
 Discrete Beta Kernel Graduation of Mortality Rates
 }
@@ -9,97 +10,113 @@ Discrete Beta Kernel Graduation of Mortality Rates
 This function performs nonparametric graduation of mortality rates using discrete beta kernel smoothing techniques.
 }
 \usage{
-dbkGrad(obsqx, omega, ex = NULL, logit = F, bandwidth = "FX", h = 0.002, s = 0.2, cvres = "propres", cvh = T, cvs = F, alpha = 0.05)
+dbkGrad(obsq, limx, limy, exposures=NULL, transformation=c("none","log","logit",
+"Gompertz"), bwtypex=c("FX","VC","EX"), bwtypey=c("FX","VC","EX"), 
+adaptx=c("a","b","ab"), adapty=c("a","b","ab"), hx=0.002, hy=0.002, sx=0.2,sy=0.2, 
+cvres=c("propres","res"), cvhx=F,cvhy=F, cvsx=F,cvsy=F, alpha=0.05)
+
 \method{print}{dbkGrad}(x,...)
-\method{as.data.frame}{dbkGrad}(x, row.names = 0:x$omega, optional = FALSE, ...)
+
+\method{as.data.frame}{dbkGrad}(x, row.names = x$limx[1]:x$limx[2], optional = FALSE, ...)
+
+\method{residuals}{dbkGrad}(object,type=c("working","proportional","response","deviance", "pearson"),...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{obsqx}{
-a numeric vector containing the observed mortality rates.
-The first element is referred to age zero.
+  \item{obsq}{
+a matrix (or an object which can be coerced to a matrix using \code{as.matrix()}) of observed mortality rates. Dimnames, if provided, should be numeric; row names should be ages and column names years. 
 }
-  \item{omega}{
-an optional scalar; it sets the upper age limit and its default value is \code{length(obsqx)-1}.
+  \item{limx, limy}{
+optional vector of two integers; if provided, \code{limx} (\code{limy}) sets a lower and a upper row (column) limit. Only data within these intervals are graduated.
 }
-  \item{ex}{
-an optional numeric vector containing the exposed to the risk of death for each age.
+  \item{exposures}{
+an optional matrix containing the exposed to the risk of death for each age and year. Dimensions of \code{exposures} should correspond to those of \code{obsq}.
 }
-  \item{logit}{
-an optional logical; if \code{logit=T}, then the logit transformation is applied to the data before graduating, and then data are back-transformed to obtain the estimate of the true rates; its default value is \code{FALSE}. 
+  \item{transformation}{
+  an optional character string; the transformation specified is applied to the observed data before graduation. Graduated data are then back-transformed. Possible values are          
+  \code{"none"} for no transformation, \code{"log"}, \code{"logit"} and \code{"Gompertz"}.
+  }
+  \item{bwtypex, bwtypey}{
+an optional character string. 
+It specifies the type of bandwidth to be adopted by row (by column) and must be:
+\itemize{
+  \item \code{"FX"} for a fixed bandwidth (default),
+  \item \code{"EX"} for an adaptive bandwidth based on \code{exposures} (see Mazza A, Punzo A, 2013, for details);
+  \item \code{"VC"} for an adaptive bandwidth based on a vector of weights derived from the variation coefficients which, in turn, depends from the \code{exposures} (see Mazza A, Punzo A, in press, for details). 
 }
-  \item{h}{
-an optional scalar. 
-It provides a value for the smoothing parameter. 
+}
+ \item{adaptx, adapty}{
+an optional character string. It is the  type of adaptive bandwidth to be adopted by row (by column) and must be:
+    \itemize{
+      \item \code{"a"} a different bandwidth for each evaluation age x at which the rates are estimated;
+      \item \code{"b"} a different bandwidth can be attributed to each age, regardless from the evaluation point;
+      \item \code{"ab"} a different bandwidth can be selected for each evaluation point and for each age.
+    }
+  }
+
+  \item{hx, hy}{
+an optional scalar. It is the global bandwidth used for the variable on the rows (columns). 
 Default value is 0.002. 
-If \code{cvh=T}, then the smoothing parameter is computed by means of cross-validation using this parameter as the initial value.
+If \code{cvhx=TRUE (cvhy=TRUE)}, then the smoothing parameter is computed by means of cross-validation using this value as an initialization.
 }
-  \item{s}{
+  \item{sx, sy}{
 an optional scalar. 
-It provides a value for the dampening factor. 
+It is the sensitive parameter used for the variable on the rows (columns). 
 Default value is 0.2. 
-If \code{cvs=T}, then the dampening factor is computed by means of cross-validation using this parameter as the initial value.
+If \code{cvsx=TRUE} (\code{cvsy=TRUE}), then the sensitive parameter is computed by means of cross-validation using this value as an initialization.
 }
-  \item{cvh}{
-an optional logical; if \code{cvh=T} then cross-validation is used to select the smoothing parameter. 
+  \item{cvhx, cvhy}{
+an optional logical; if \code{cvsx=TRUE (cvsy=TRUE)} then cross-validation is used to select the smoothing parameter. 
 Default value is \code{TRUE}. 
-Parameter \code{h} is the initial value used in cross-validation.
+Parameter \code{hx, (hy)} is the initial value used in cross-validation.
 }
-  \item{cvs}{
-an optional logical; if \code{TRUE} then cross-validation is used to select the dampening factor. 
+  \item{cvsx, cvsy}{
+an optional logical; if \code{TRUE} then cross-validation is used to select the sensitive parameter. 
 Default value is \code{FALSE}. 
-Parameter \code{s} is the initial value used in cross-validation.
+The value of sx (sy) is used to initialize the cross-validation process.
 }
   \item{cvres}{
-an optional character string; if \code{cvres="propres"} (the default), then cross-validation selects the smoothing parameter and/or the dampening factor by minimizing the squares of the proportional differences between observed and estimated values, while if \code{cvres="res"} then the sum of square residuals is minimized.
+an optional character string; if \code{cvres="propres"} (the default), then cross-validation selects the smoothing parameter and/or the sensitive parameter  by minimizing the squares of the proportional differences between observed and estimated values, while if \code{cvres="res"} then the sum of square residuals is minimized.
 }
- \item{bandwidth}{
-an optional character string. 
-It specifies the bandwidth type and must be:
-\itemize{
-  \item \code{"FX"} for a fixed bandwidth,
-  \item \code{"EX"} for an adaptive bandwidth based on the number of the exposed to the risk of death \code{ex} (see Mazza A, Punzo A, 2013, for details);
-  \item \code{"VC"} for an adaptive bandwidth based on a vector of weights derived from the variation coefficients which, in turn, depends from the exposed to the risk of death \code{ex} (see Mazza A, Punzo A, in press, for details). 
-}
-Default value is \code{"FX"}.
-}
+
   \item{alpha}{an optional scalar. 
-When the \code{ex} argument is provided, the function returns \code{(1-alpha)*100\%} pointwise confidence intervals for fitted values. 
+When the \code{exposures} argument is provided, the function returns \code{(1-alpha)*100\%} pointwise confidence intervals and pointwise confidence bands for fitted values. 
 Default value is 0.05.
 }	 
   \item{x}{a \code{dbkGrad} object}
-  \item{row.names}{a NULL or a character vector giving the row names for the data frame. Missing values are not allowed. Default value is \code{0:x$omega}.}
+  \item{row.names}{a NULL or a character vector giving the row names for the data frame. Missing values are not allowed. Default value is \code{0:x$limx, limy}.}
   \item{optional}{logical. If TRUE, setting row names and converting column names (to syntactic names: see make.names) is optional.}
   \item{...}{additional arguments to be passed to or from methods.}
+
+  \item{type}{ \code{"working"},\code{"proportional"},\code{"response"},\code{"deviance"}, \code{"pearson"}}
+   \item{object}{a \code{dbkGrad} class object.}
 }
 \details{
 In the cross-validation routine, minimization is performed using the Levenberg-Marquardt algorithm (More 1978) in the minpack.lm package (Elzhov, Mullen, and Bolker 2010). 
 }
 \value{
 Returned from this function is an \code{dbkGrad} object which is a list with the following components:
-  \item{obsqx}{a numeric vector containing the observed mortality rates until age \code{omega}.
-The first element is referred to age zero.}
-  \item{fitted.values}{a numeric vector containing the graduated values.} 
-  \item{ex}{a numeric vector containing the exposed to the risk of death for each age until \code{omega}.}
-  \item{h}{a scalar. 
-  It is the smoothing parameter used in discrete beta kernel smoothing.}
-  \item{s}{a scalar. 
-  It is the dampening parameter used in discrete beta kernel smoothing. It is returned if \code{bandwidth = "EX"} or \code{bandwidth = "VC"}}
-  \item{residuals}{a numeric vector containing the residuals \code{fitted.values - obsqx}.}
-  \item{prop.residuals}{a numeric vector containing the proportional residuals  \code{fitted.values / obsqx - 1}.}
+  \item{fitted.values}{a matrix containing the graduated values.} 
+  \item{residuals}{a matrix containing the working residuals \code{fitted.values - obsq}.}
   \item{kernels}{a matrix. 
-  \code{kernels \%*\% obsqx} returns the \code{fitted.values}}
+  \code{kernels \%*\% obsq} returns the \code{fitted.values}}
   \item{cvRSS}{a scalar. 
-  It is the cross-validation residual sum of squares (RSS)computed over the fitted values, using the residuals specified in \code{cvres}.}
+  It is the cross-validation residual sum of squares (RSS) computed over the fitted values, using the residuals specified in \code{cvres}.}
+  \item{hx (hy)}{a scalar. 
+  It is the global bandwidth used for the variable on the rows (columns).}
+  \item{sx (sy)}{a scalar. 
+  It is the sensitive parameter used for the variable on the rows (columns). It is returned when \code{bandwidth = "EX"} or \code{bandwidth = "VC"}}
+  \item{upperbound,lowerbound}{pointwise confidence interval. Returned when \code{exposures} is provided.}
+  \item{bonferroniupperbound, bonferronilowerbound}{limits of the Bonferroni confidence bands. Returned when \code{exposures} is provided.}
+  \item{sidakupperbound, sidaklowerbound}{limits of the Sidak confidence bands. Returned when \code{exposures} is provided.}
+  \item{obsq}{a matrix containing the observed mortality rates with dimensions set by \code{limx, limy}.}
+  \item{exposures}{a matrix containing the exposures with dimensions set by \code{limx, limy}.}
+  \item{limx (limy)}{a vector with lower and upper row (column) limits. Only data within these interval are graduated.}
   \item{call}{an object of class \code{call}.}
-  \item{lowerbound}{a numeric vector containing the lower bound of the \code{(1-alpha)*100\%} pointwise confidence intervals for fitted values. It is returned only if \code{ex} is provided bye the user.}
-  \item{upperbound}{a numeric vector containing the upper bound of the \code{(1-alpha)*100\%} pointwise confidence intervals for fitted values. It is returned only if \code{ex} is provided bye the user.}
 }
 
 \references{
 Elzhov TV, Mullen KM, Bolker B (2010) \emph{minpack.lm:} R Interface to the Levenberg-Marquardt Nonlinear Least-Squares Algorithm Found in MINPACK. R package version 1.1-5. URL http://CRAN.R-project.org/package=minpack.lm.
-
-Bagnato L, Punzo A (in press) Finite Mixtures of Unimodal Beta and Gamma Densities and the k-Bumps Algorithm. \emph{Computational Statistics}.
 
 Mazza A, Punzo A (2011) Discrete Beta Kernel Graduation of Age-Specific Demographic Indicators. In S Ingrassia, R Rocci, M Vichi (eds.), \emph{New Perspectives in Statistical Modeling and Data Analysis}, volume \bold{42} of \emph{Studies in Classification, Data Analysis and Knowledge Organization}, pp. 127-134. Springer-Verlag, Berlin-Heidelberg.
 
@@ -111,7 +128,6 @@ More J (1978) The Levenberg-Marquardt Algorithm: Implementation and Theory. In G
 
 Punzo A (2010) Discrete Beta-type Models. In H Locarek-Junge, C Weihs (eds.), \emph{Classification as a Tool for Research}, volume \bold{40} of \emph{Studies in Classification, Data Analysis and Knowledge Organization}, pp. 253-261. Springer-Verlag, Berlin-Heidelberg.
 
-Punzo A, Zini A (2012) Discrete Approximations of Continuous and Mixed Measures on a Compact Interval \emph{Statistical Papers}, \bold{53}(3), 563-575.
 }
 \author{
 Angelo Mazza and Antonio Punzo
@@ -123,44 +139,26 @@ Angelo Mazza and Antonio Punzo
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{DBKGrad-package}}, \code{\link{plot}}, \code{\link{Sicily2008M}}
+\code{\link{DBKGrad-package}}, \code{\link[DBKGrad:plot.dbkGrad]{plot}}, \code{\link{ItalyM}}
 }
 \examples{
 
-# data loading
+data("ItalyM")
 
-data("Sicily2008M")
-obsqx <- Sicily2008M$qx
-ex    <- Sicily2008M$ex
-head(Sicily2008M)
-tail(Sicily2008M)
+# unidimensional analysis
 
-# fixed discrete beta kernel graduation
+res1 <- dbkGrad(obsq=obsq, limx=c(6,71), limy=104, exposure=population, bwtypex="EX", adaptx="ab")
+plot(res1, plottype="obsfit", CI=FALSE, CBBonf=TRUE)
+plot(res1, plottype="residuals", restype="pearson")
+plot(res1, plottype="checksd", restype="pearson")
+residuals(res1, type="pearson")
 
-resFX1 <- dbkGrad(obsqx=obsqx, omega=85)
-plot(resFX1, plottype="observed")
-plot(resFX1, plottype="fitted")
-plot(resFX1, plottype="obsfit")
-plot(resFX1, plottype="histres")
+# bidimensional analysis
 
-resFX2 <- dbkGrad(obsqx, ex=ex, omega=85, alpha=0.05)
-plot(resFX2, plottype="obsfit", CI=TRUE)
-
-resFX3 <- dbkGrad(obsqx, ex, omega=85, h=0.01, cvh=FALSE, alpha=0.05)
-plot(resFX3, plottype="obsfit", CI=TRUE)
-plot(resFX3, plottype="exposed")
-
-# adaptive discrete beta kernel graduation
-
-resEX <- dbkGrad(obsqx, omega=85, ex, bandwidth="EX", s=0.28, cvres="res", cvh=TRUE, cvs=FALSE, alpha=0.05)
-plot(resEX, plottype="obsfit", CI=TRUE)
-
-resVC <- dbkGrad(obsqx, omega=85, ex, logit=TRUE, bandwidth="VC", cvh=TRUE, cvs=TRUE, alpha=0.05)
-plot(resVC, plottype="obsfit", CI=TRUE)
-
-# summary of results
-
-as.data.frame(resVC)
+res2 <- dbkGrad(obsq=obsq, limx=c(6,46), limy=c(60,80), exposure=population, 
+transformation="logit", bwtypex="VC", bwtypey="EX", hx=0.01, hy=0.008, adaptx="ab", adapty="b")
+plot(res2, plottype="obsfit")
+plot(res2, plottype="obsfit", plotstyle="persp", col="black")
 
 
 }
