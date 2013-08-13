@@ -1,4 +1,4 @@
-dbkGrad  <- function(obsq, limx, limy, exposures=NULL, transformation=c("none","log","logit","Gompertz"), bwtypex=c("FX","VC","EX"), bwtypey=c("FX","VC","EX"), adaptx=c("a","b","ab"), adapty=c("a","b","ab"), hx=0.002, hy=0.002, sx=0.2,sy=0.2, cvres=c("propres","res"), cvhx=F,cvhy=F, cvsx=F,cvsy=F, alpha=0.05){
+dbkGrad  <- function(obsq, limx, limy, exposures=NULL, transformation=c("none","log","logit","Gompertz"), bwtypex=c("FX","VC","EX"), bwtypey=c("FX","VC","EX"), adaptx=c("a","b","ab"), adapty=c("a","b","ab"), hx=0.002, hy=0.002, sx=0.2,sy=0.2, cvres=c("propres","res"), cvhx=FALSE,cvhy=FALSE, cvsx=FALSE,cvsy=FALSE, alpha=0.05){
   obsq <- as.matrix(obsq)
   if (missing(limx)) limx <-c(1,nrow(obsq)) 
   if (length(limx)==1) limx<- c(limx,limx)
@@ -65,14 +65,14 @@ dbkGrad  <- function(obsq, limx, limy, exposures=NULL, transformation=c("none","
       cat("Warning: cross-validation returned nan; specify different initial values.")}
   }
   else{
-    cvRSS <- .dkCV(par=NULL, hx=hx,hy=hy,sx=sx,sy=sy,cvhx=F,cvhy=F, cvsx=F,cvsy=F, maxx=maxx,maxy=maxy,cvres=cvres, obsq=obsq,xweights=xweights, yweights=yweights,iandj=iandj,adaptx=adaptx,adapty=adapty)
+    cvRSS <- .dkCV(par=NULL, hx=hx,hy=hy,sx=sx,sy=sy,cvhx=FALSE,cvhy=FALSE, cvsx=FALSE,cvsy=FALSE, maxx=maxx,maxy=maxy,cvres=cvres, obsq=obsq,xweights=xweights, yweights=yweights,iandj=iandj,adaptx=adaptx,adapty=adapty)
     if (any(is.nan(cvRSS))){
        cat("Warning: for the specified h", ifelse(bwtypex!="FX","and s,",""),"no smoothing was applied at ages:")
       cat((0:limx[2])[is.nan(cvRSS)],sep = ",")
     }
    cvRSS <- sum(cvRSS)^2
   }
-  q         <-  lapply(1:nrow(iandj),FUN=".ddbeta2",iandj=iandj,maxx=maxx,maxy=maxy,xweights=xweights,yweights=yweights,obsq=obsq,exposures=exposures, cv=F,adaptx=adaptx,adapty=adapty,hx=hx,hy=hy,sx=sx,sy=sy)
+  q         <-  lapply(1:nrow(iandj),FUN=".ddbeta2",iandj=iandj,maxx=maxx,maxy=maxy,xweights=xweights,yweights=yweights,obsq=obsq,exposures=exposures, cv=FALSE,adaptx=adaptx,adapty=adapty,hx=hx,hy=hy,sx=sx,sy=sy)
   qxest     <-  matrix(unlist(sapply(q,"[",1)),maxx,maxy, dimnames=dimnames(obsq))
   kernels   <-  array(unlist(sapply(q,"[",2)),c(maxx,maxy,maxx*maxy))
   qxest     <- .btransformation(qxest,transformation) 
@@ -228,12 +228,10 @@ residuals.dbkGrad <- function(object,type=c("working","proportional","response",
   as.matrix(y)
 }
 
-###x=x,rows=rows,columns=columns,byage=byage,logscale=logscale,alphares=alphares,restype=restype
-#### rows,columns,byage,logscale,alphares,restype
-
 plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure","residuals","checksd"),plotstyle=c("mat", "level","persp"),restype=c("working","proportional","response","deviance", "pearson"),
                          byage=TRUE, columns, rows, CI=TRUE, CBBonf=FALSE, CBSidak=FALSE, logscale=TRUE,alphares=0.05,col,...)
 {
+  def.par <- par(no.readonly = TRUE) 
   if (missing(columns)) columns <- 1:ncol(x$fitted.values)
   if (missing(rows)) rows <- 1:nrow(x$fitted.values)
   plottype <- match.arg(plottype)
@@ -249,6 +247,7 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
     if (CBBonf).ci.plot(x=x,rows=rows,columns=columns,byage=byage,logscale=logscale,type="CBBonf",col=col)
     if (CBSidak).ci.plot(x=x,rows=rows,columns=columns,byage=byage,logscale=logscale,type="CBSidak",col=col)
   }
+  par(def.par)
 }
 .level.plot<- function(grid,formula,key.labels,logscale,xlab="year",ylab="age",col=1,pch,lwd,legend,
                        palette="terrain.colors",at= quantile(grid$z, prob = seq(0,1, length.out=11)),
@@ -258,7 +257,6 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
     else key.labels<-round(at,digits=digits) 
   } 
   col.regions  <- get(palette)(length(at))
-  dev.new()
   print(levelplot(x=formula, grid, xlab=xlab, ylab=ylab, sub=sub, col.regions=col.regions, colorkey = list(col = col.regions, labels=as.character(key.labels)), at = at,...))
 }
 
@@ -304,33 +302,39 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
   grid <- expand.grid(list(x = xx, y = yy))
   grid$z <- as.vector(res)
   if (missing(sub))  sub <-  paste(restype, "residuals")
+  def.par <- par(no.readonly = TRUE)
   .level.plot(grid,formula=z ~ y * x,logscale=FALSE,sub=sub,col=col,...)
+  readline("Press <Enter> to continue")
+  par(def.par) 
   .residuals.density.plot(res,xlab=sub,logscale=FALSE,sub=sub,col=col)
 }
 .residuals.density.plot <- function(res,rows,columns,byage,logscale,alphares,restype,xlab,main,sub=sub,col,...)
 {
   if (missing(col)) col <- 1
-  dev.new() 
   plot(density(res),main="",xlab=xlab,col=col,...)
 }
 
 .residuals.mat.plot <- function(x,rows,columns,byage,logscale,alphares,restype,xlab,ylab=paste(restype, "residuals"),col,...)    
 {
+  def.par <- par(no.readonly = TRUE) 
   res <- .extract(mat=residuals(x, type=restype) ,rows, columns,byage)
   for (i in 1:ncol(res) ){
-    .mat.plot(mat= res,logscale=FALSE,ylab=ylab,x=x,byage=T,rows=1:nrow(res), columns=i,type="h",col=col,...)
+    .mat.plot(mat= res,logscale=FALSE,ylab=ylab,x=x,byage=TRUE,rows=1:nrow(res), columns=i,type="h",col=col,...)
     abline(qnorm(alphares/2),0, col="gray", lty=2)
     abline(0,0, col="gray", lty=2)
     abline(qnorm(1-alphares/2),0, col="gray", lty=2)
-    if (i< ncol(res))dev.new()
+    if (i< ncol(res)) readline("Press <Enter> to continue")
   }
+  readline("Press <Enter> to continue")
+  par(def.par) 
   .residualsVsFitted.mat.plot(x=x,rows=rows,columns=columns,byage=byage,logscale=logscale,restype=restype,alphares=alphares,col=col,...)
+  par(def.par) 
+  readline("Press <Enter> to continue")
   .residuals.density.plot(res,xlab=ylab,col=col,...)
 }
 
 .residualsVsFitted.mat.plot <- function(x,rows,columns,byage,logscale,alphares,restype,xlab="fitted values",ylab=paste(restype, "residuals"),col,...)    
 {
-  dev.new()
   res    <- as.vector(.extract(mat=residuals(x, type=restype),rows, columns,byage))
   fitted <- as.vector(.extract(mat=x$fitted.values,rows, columns,byage))
   atx <- xlabels <-  round(fitted,digits=5)
@@ -341,6 +345,7 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
       atx <- log(atx)
   }
   aty <- round(seq(min(res),max(res),length.out =5),digits=5)
+  layout(cbind(1,1))
   par(mar=c(5, 4, 4, 1) + 0.1,cex.axis=0.8,cex=0.8)
   matplot(y=res,x=fitted,xlab=xlab,ylab=ylab,type="h",axes = FALSE,col=col,...) #
   axis(1,at = atx,labels = xlabels)
@@ -355,8 +360,9 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
   y <- .extract(mat=residuals(x, type=restype),rows, columns,byage)
   for (i in 1:ncol(y) ){
     acf(y[,i],main="",sub=paste(restype,"residuals",colnames(y)[i]),col=col,...)
-    dev.new()
+    readline("Press <Enter> to continue")
     ADF(y[,i],main="",sub=paste(restype,"residuals",colnames(y)[i]),col=col,...)
+    if (i< ncol(y)) readline("Press <Enter> to continue")
   }
 }
 
@@ -408,8 +414,8 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
   for (i in 1:ncol(y) ){
     yat <- seq(0,max(y[,i]),length=5) 
     ylabels <- round(yat,digits=0)
-    .mat.plot(mat=y,logscale=F,ylab=ylab,col=col,x=x,byage=T,rows=1:nrow(y),columns=i,type="h",pch=pch,lwd=lwd,ylabels=ylabels,yat=yat,ylim=range(yat),...)
-    if (i< ncol(y)) dev.new()
+    .mat.plot(mat=y,logscale=FALSE,ylab=ylab,col=col,x=x,byage=TRUE,rows=1:nrow(y),columns=i,type="h",pch=pch,lwd=lwd,ylabels=ylabels,yat=yat,ylim=range(yat),...)
+    if (i< ncol(y)) readline("Press <Enter> to continue")
   }
 }
   
@@ -446,7 +452,7 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
   layout(cbind(2,1), widths=c(6,1))
   par(mar=c(0, 0, 0, 0))
   plot.new()
-  legend("left", legend=legend, col=col, pch=pch, h=F,cex=0.8, bty="n",inset=c(0,0)) 
+  legend("left", legend=legend, col=col, pch=pch, h=FALSE,cex=0.8, bty="n",inset=c(0,0)) 
   par(mar=c(5, 4, 4, 1) + 0.1,cex.axis=0.8,cex=0.8)
   matplot(y=y,x=as.numeric(rownames(y)),pch=pch,xlab=xlab,ylab=ylab, col=col,type=type,axes = FALSE,...) #
   axis(1,at = as.numeric(rownames(y)),labels = round(as.numeric(rownames(y))))
@@ -501,7 +507,7 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
   plot.new()
   if(missing(legend)) legend <- colnames(y)
   if (missing(xlabels)) xlabels <- round(as.numeric(rownames(y)),digits=3)
-  legend("left", legend=legend, col=col, pch=pch, h=F,cex=0.8, bty="n",inset=c(0,0)) 
+  legend("left", legend=legend, col=col, pch=pch, h=FALSE,cex=0.8, bty="n",inset=c(0,0)) 
   par(mar=c(5, 4, 4, 1) + 0.1,cex.axis=0.8,cex=0.8)
   matplot(y=y,x=as.numeric(rownames(y)),pch=pch,xlab=xlab,ylab=ylab, col=col,type=type,axes = FALSE,lwd=lwd,...) #
   axis(1,at = as.numeric(rownames(y)),labels = xlabels)
@@ -518,14 +524,21 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
 .exposure.persp.plot<- function(x,rows,columns,byage,logscale,alphares,restype,zlab,col,...){
   z <- .extract(x$exposure,rows,columns,TRUE)
   if(missing(zlab)) zlab <- "esposures"
+ # zat <- seq(0,max(z),length=5) 
+#  zlabels <- round(zat,digits=0)
   .persp.plot(z=z,logscale=FALSE,rows=rows,columns=columns,zlab=zlab,segments=TRUE,zlim=c(0,max(z)),col=col,...)
 }
 
 .residuals.persp.plot <- function(x,rows,columns,byage,logscale,alphares,restype,xlab,zlab=paste(restype, "residuals"),col,...)    
 {
+  def.par <- par(no.readonly = TRUE) 
   z  <- .extract(mat=residuals(x, type=restype) ,rows, columns,TRUE)  
   .persp.plot(z=z,logscale=FALSE,zlab=zlab,segments=TRUE,col=col,...)
+  readline("Press <Enter> to continue")
+  par(def.par) 
   .residuals.density.plot(res=z,xlab=zlab,rows=rows,columns=columns,byage=byage,logscale=logscale,alphares=alphares,restype=restype,col=col,...)
+  readline("Press <Enter> to continue")
+  par(def.par) 
   .residualsVsFitted.persp.plot(x=x,rows=rows,columns=columns,zlab=zlab,restype=restype,byage=byage,logscale=logscale,segments=TRUE,col=col,...)
 }
 
@@ -547,6 +560,7 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
 .obsfit.persp.plot <- function(x,rows,columns,byage,logscale,alphares,restype,col,...)
 {
   .observed.persp.plot(x=x,rows=rows,columns=columns,byage=byage,logscale=logscale,alphares=alphares,restype=restype,col=col,...)
+  readline("Press <Enter> to continue")
   .fitted.persp.plot(x=x,rows=rows,columns=columns,byage=byage,logscale=logscale,alphares=alphares,restype=restype,col=col,...)
 }
 .persp.plot<- function(x=matrix(rep(as.numeric(rownames(z)),ncol(z)),nrow(z),ncol(z)),
@@ -561,16 +575,15 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
   }
   if (missing(col)) col <- 1:ncol(z)
   else col <- rep(col, ncol(z))
-  dev.new()
-  plot.new()
   par(mar=c(5, 4, 4, 1) + 0.1,cex.axis=0.8,cex=0.8)
-  
+ # plot.new()
   persp(x=x[,1], y=y[1,], z=z,
         xlab = xlab,
         ylab = ylab,
         zlab = zlab,
         xlim = xlim,
         ylim=ylim,
+        zlim=zlim,
         border = border,
         theta = theta, 
         axes = axes, 
@@ -584,10 +597,10 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
     if (!segments) points(p0, col = col[i], lwd=lwd, cex=cex, pch=pch)
     else 
     {
-      s0 <- trans3d(x = min(x),y =y[,i],z = 0, pmat = res) 
-      s1 <- trans3d(x = max(x),y =y[,i],z = 0, pmat = res)  
       p1 <- trans3d(x = x[,i],y =y[,i],z = 0, pmat = res)  
       segments(x0=p0$x,y0=p0$y,x1=p1$x,y1=p1$y, col = col[i], lwd=lwd, cex=cex, pch=pch)
+      s0 <- trans3d(x = min(x),y =y[,i],z = 0, pmat = res) 
+      s1 <- trans3d(x = max(x),y =y[,i],z = 0, pmat = res)  
       segments(x0=s0$x,y0=s0$y,x1=s1$x,y1=s1$y, col = col[i], lwd=1, cex=cex, pch=pch, lty=3)
     }
   }

@@ -13,7 +13,7 @@ This function performs nonparametric graduation of mortality rates using discret
 dbkGrad(obsq, limx, limy, exposures=NULL, transformation=c("none","log","logit",
 "Gompertz"), bwtypex=c("FX","VC","EX"), bwtypey=c("FX","VC","EX"), 
 adaptx=c("a","b","ab"), adapty=c("a","b","ab"), hx=0.002, hy=0.002, sx=0.2,sy=0.2, 
-cvres=c("propres","res"), cvhx=F,cvhy=F, cvsx=F,cvsy=F, alpha=0.05)
+cvres=c("propres","res"), cvhx=FALSE,cvhy=FALSE, cvsx=FALSE,cvsy=FALSE, alpha=0.05)
 
 \method{print}{dbkGrad}(x,...)
 
