@@ -10,16 +10,18 @@ Discrete Beta Kernel Graduation of Mortality Rates
 This function performs nonparametric graduation of mortality rates using discrete beta kernel smoothing techniques.
 }
 \usage{
-dbkGrad(obsq, limx, limy, exposures=NULL, transformation=c("none","log","logit",
-"Gompertz"), bwtypex=c("FX","VC","EX"), bwtypey=c("FX","VC","EX"), 
-adaptx=c("a","b","ab"), adapty=c("a","b","ab"), hx=0.002, hy=0.002, sx=0.2,sy=0.2, 
-cvres=c("propres","res"), cvhx=FALSE,cvhy=FALSE, cvsx=FALSE,cvsy=FALSE, alpha=0.05)
+dbkGrad(obsq, limx, limy, exposures = NULL, transformation = c("none", "log", "logit",
+       "Gompertz"), bwtypex = c("FX", "VC", "EX"), bwtypey = c("FX", "VC", "EX"), 
+       adaptx = c("a", "b", "ab"), adapty = c("a", "b", "ab"), hx = 0.002, hy = 0.002,
+       sx = 0.2, sy = 0.2, cvres = c("propres", "res"), cvhx = FALSE, cvhy = FALSE, 
+       cvsx = FALSE, cvsy = FALSE, alpha = 0.05)
 
-\method{print}{dbkGrad}(x,...)
+\method{print}{dbkGrad}(x, \dots)
 
-\method{as.data.frame}{dbkGrad}(x, row.names = x$limx[1]:x$limx[2], optional = FALSE, ...)
+\method{as.data.frame}{dbkGrad}(x, row.names = x$limx[1]:x$limx[2], optional = FALSE, \dots)
 
-\method{residuals}{dbkGrad}(object,type=c("working","proportional","response","deviance", "pearson"),...)
+\method{residuals}{dbkGrad}(object, type = c("working", "proportional", "response", 
+      "deviance", "pearson"), \dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -41,7 +43,7 @@ an optional character string.
 It specifies the type of bandwidth to be adopted by row (by column) and must be:
 \itemize{
   \item \code{"FX"} for a fixed bandwidth (default),
-  \item \code{"EX"} for an adaptive bandwidth based on \code{exposures} (see Mazza A, Punzo A, 2013, for details);
+  \item \code{"EX"} for an adaptive bandwidth based on \code{exposures} (see Mazza A, Punzo A, 2013a, for details);
   \item \code{"VC"} for an adaptive bandwidth based on a vector of weights derived from the variation coefficients which, in turn, depends from the \code{exposures} (see Mazza A, Punzo A, in press, for details). 
 }
 }
@@ -118,15 +120,15 @@ Returned from this function is an \code{dbkGrad} object which is a list with the
 \references{
 Elzhov TV, Mullen KM, Bolker B (2010) \emph{minpack.lm:} R Interface to the Levenberg-Marquardt Nonlinear Least-Squares Algorithm Found in MINPACK. R package version 1.1-5. URL http://CRAN.R-project.org/package=minpack.lm.
 
-Mazza A, Punzo A (2011) Discrete Beta Kernel Graduation of Age-Specific Demographic Indicators. In S Ingrassia, R Rocci, M Vichi (eds.), \emph{New Perspectives in Statistical Modeling and Data Analysis}, volume \bold{42} of \emph{Studies in Classification, Data Analysis and Knowledge Organization}, pp. 127-134. Springer-Verlag, Berlin-Heidelberg.
+Mazza A, Punzo A (2011) Discrete Beta Kernel Graduation of Age-Specific Demographic Indicators. In S Ingrassia, R Rocci, M Vichi (eds.), \emph{New Perspectives in Statistical Modeling and Data Analysis}, \emph{Studies in Classification, Data Analysis and Knowledge Organization}, pp. 127-134. Springer-Verlag, Berlin-Heidelberg.
 
-Mazza A, Punzo A (2013) Graduation by Adaptive Discrete Beta Kernels. In A Giusti, G Ritter, M Vichi (eds.), \emph{Classification and Data Mining}, volume \bold{44} of \emph{Studies in Classification, Data Analysis and Knowledge Organization}, pp. 77-84. Springer-Verlag, Berlin-Heidelberg.
+Mazza A, Punzo A (2013a) Graduation by Adaptive Discrete Beta Kernels. In A Giusti, G Ritter, M Vichi (eds.), \emph{Classification and Data Mining}, \emph{Studies in Classification, Data Analysis and Knowledge Organization}, pp. 77-84. Springer-Verlag, Berlin-Heidelberg.
 
-Mazza A, Punzo A (in press) Using the Variation Coefficient for Adaptive Discrete Beta Kernel Graduation. In P Giudici, S Ingrassia, M Vichi (eds.), \emph{Advances in Statistical Modelling for Data Analysis, Studies in Classification, Data Analysis and Knowledge Organization}, Springer-Verlag, Berlin-Heidelberg.
+Mazza A, Punzo A (2013b) Using the Variation Coefficient for Adaptive Discrete Beta Kernel Graduation. In P Giudici, S Ingrassia, M Vichi (eds.), \emph{Advances in Statistical Modelling for Data Analysis, Studies in Classification, Data Analysis and Knowledge Organization}, pp. 225-232, Springer International Publishing, Switzerland.
 
 More J (1978) The Levenberg-Marquardt Algorithm: Implementation and Theory. In G Watson (ed.), \emph{Numerical Analysis}, volume \bold{630} of \emph{Lecture Notes in Mathematics}, pp. 104-116. Springer- Verlag, Berlin-Heidelberg.
 
-Punzo A (2010) Discrete Beta-type Models. In H Locarek-Junge, C Weihs (eds.), \emph{Classification as a Tool for Research}, volume \bold{40} of \emph{Studies in Classification, Data Analysis and Knowledge Organization}, pp. 253-261. Springer-Verlag, Berlin-Heidelberg.
+Punzo A (2010) Discrete Beta-type Models. In H Locarek-Junge, C Weihs (eds.), \emph{Classification as a Tool for Research}, \emph{Studies in Classification, Data Analysis and Knowledge Organization}, pp. 253-261. Springer-Verlag, Berlin-Heidelberg.
 
 }
 \author{

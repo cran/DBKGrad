@@ -5,25 +5,25 @@
 Plotting the \code{\link{dbkGrad}} object produces a few different plots that are of interest. The different plots, created from various \code{plottype} options, are described below:
 }
 \usage{
-  \method{plot}{dbkGrad}(x, plottype=c("obsfit", "fitted", "observed", "exposure",
-  "residuals", "checksd"),plotstyle=c("mat", "level","persp"),
-  restype=c("working","proportional","response","deviance", "pearson"),byage=TRUE, 
-  columns, rows, CI=TRUE, CBBonf=FALSE, CBSidak=FALSE,
-  logscale=TRUE,alphares=0.05,col,\dots)
+\method{plot}{dbkGrad}(x, plottype = c("obsfit", "fitted", "observed", "exposure",
+    "residuals", "checksd"), plotstyle = c("mat", "level", "persp"),
+    restype = c("working", "proportional", "response", "deviance", "pearson"), 
+    byage = TRUE, columns, rows, CI = TRUE, CBBonf = FALSE, CBSidak = FALSE,
+    logscale = TRUE, alphares = 0.05, col, \dots)
 }
 
 %- maybe also 'usage' for other objects documented here.
 
 \arguments{
   \item{x}{a \code{\link{dbkGrad}} object}
-	\item{plottype}{an optional character string. It specifies the type of plot to dispaly and must be one of:
+	\item{plottype}{an optional character string. It specifies the type of plot to display and must be one of:
     \itemize{
       \item \code{"observed"} to plot observed values; 
       \item \code{"fitted"} to plot fitted values; 
       \item \code{"obsfit"} to plot observed and fitted values (default);
       \item \code{"exposure"} to plot the exposed to the risk of death;
       \item \code{"residuals"} to display plots related to residuals: density of residuals, residuals versus fitted values, and residuals versus the discrete variable of interest; 
-      \item \code{"checksd"} to plot autocorrelogram and autodependogram of residuals (only for the unidimensional case).See Bagnato L, De Capitani L, Punzo A, 2013b.
+      \item \code{"checksd"} to plot autocorrelogram and autodependogram (see Bagnato, Punzo, Nicolis, 2012) of residuals, only for the unidimensional case.
     }  
   }
 	\item{plotstyle}{an optional character string. It specifies the style of plot; it has no effect when \code{plottype=checksd}. It must be:
@@ -41,7 +41,7 @@ Plotting the \code{\link{dbkGrad}} object produces a few different plots that ar
       \item \code{"deviance"} {to use deviance residuals:  \code{sign(o-f) * sqrt(2*e*o*log(o/f) + 2*e*(1-o)*log((1-o)/(1-f)))};}
       \item \code{"pearson"} {to use Pearson residuals:  \code{e*(o-f)/sqrt(e*f*(1-f))},}
     }
-    where exposures, o=observed values and f=fitted values.
+    where \code{e}=exposures, \code{o}=observed values and \code{f}=fitted values.
   }
   \item{rows, columns}{an optional numeric vector. It specifies the rows (columns) to plot. 
   }
@@ -55,7 +55,7 @@ Plotting the \code{\link{dbkGrad}} object produces a few different plots that ar
 When \code{plottype=residuals} the boundaries of the \code{(alphares)*100\%} critical region are displayed. 
 Default value is 0.05.}
 \item{col}{a scalar or a vector with plotting colors.}
-  \item{...}{additional arguments to be passed to or from methods.}
+  \item{\dots}{additional arguments to be passed to or from methods.}
 }
 
 \value{
@@ -64,13 +64,11 @@ No values are returned from the plot function.
 }
 
 \references{
-Bagnato L, Punzo A, Nicolis O (2012). The autodependogram: a graphical device to investigate serial dependences.\emph{Journal of Time Series Analysis}, \bold{33}(2), 233-254.
+Bagnato L, Punzo A, Nicolis O (2012). The autodependogram: a graphical device to investigate serial dependences. \emph{Journal of Time Series Analysis}, \bold{33}(2), 233-254.
 
-Bagnato L, De Capitani L, Punzo A (2013a). Detecting Serial Dependencies with the Reproducibility Probability Autodependogram. \emph{Advances in Statistical Analysis}. doi:
-10.1007/s10182-013-0208-y.
+Bagnato L, De Capitani L, Punzo A (2013a). Detecting Serial Dependencies with the Reproducibility Probability Autodependogram. \emph{Advances in Statistical Analysis}. doi:10.1007/s10182-013-0208-y.
 
-Bagnato L, De Capitani L, Punzo A (2013b). Testing Serial Independence via Density-Based Measures of Divergence.\emph{Methodology and Computing in Applied Probability}. doi:
-10.1007/s11009-013-9320-4.
+Bagnato L, De Capitani L, Punzo A (2013b). Testing Serial Independence via Density-Based Measures of Divergence. \emph{Methodology and Computing in Applied Probability}. doi:10.1007/s11009-013-9320-4.
 
 }
 \author{

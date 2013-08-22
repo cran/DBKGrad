@@ -1,8 +1,8 @@
-fdb7edb400bb17f6c95dfa81fabf5aca *DESCRIPTION
+5a6e10912b53f4f6e9fa6e471a8d9a6d *DESCRIPTION
 8b36e7b292ab9398fae1421909723a35 *NAMESPACE
 524e332e5a2278c9096762d6e858102a *R/dbkGrad.R
 e7c312112c1c6739417bc5656e7026fc *data/ItalyM.RData
-4795f96605a010ac81906850cf898487 *man/DBKGrad-package.Rd
+b02c590581c6d1ead7190958f456183f *man/DBKGrad-package.Rd
 b862f3692f3064c65ca73bd8a74f94fa *man/ItalyM.Rd
-4cb1db881066b4d167c0e37752abec0c *man/dbkGrad.Rd
-32efaee43e1db1a0889a7512f478f1ad *man/plot.dbkGrad.Rd
+4910a60856478abe3a9f4426a203c678 *man/dbkGrad.Rd
+034b4676ce0b5ad66ee4f2043ead3232 *man/plot.dbkGrad.Rd
