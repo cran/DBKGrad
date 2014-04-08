@@ -70,6 +70,7 @@ Bagnato L, De Capitani L, Punzo A (2013a). Detecting Serial Dependencies with th
 
 Bagnato L, De Capitani L, Punzo A (2013b). Testing Serial Independence via Density-Based Measures of Divergence. \emph{Methodology and Computing in Applied Probability}. doi:10.1007/s11009-013-9320-4.
 
+Mazza A, Punzo A (2014) DBKGrad: An R Package for Mortality Rates Graduation by Discrete Beta Kernel Techniques. \emph{Journal of Statistical Software, Code Snippets}, \bold{57}{2}, 1-18.
 }
 \author{
 Angelo Mazza and Antonio Punzo

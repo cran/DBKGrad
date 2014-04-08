@@ -14,7 +14,7 @@ dbkGrad  <- function(obsq, limx, limy, exposures=NULL, transformation=c("none","
   }
   obsq <- .extract(obsq,rows=limx[1]:limx[2], columns=limy[1]:limy[2],byage=TRUE)
   if (is.null(dimnames(obsq))) dimnames(obsq) <- list(limx[1]:limx[2],1:(ncol(obsq)))
-  if(!is.null(exposures)) exposures <- .extract(exposures,rows=limx[1]:limx[2], columns=limy[1]:limy[2],byage=TRUE)
+  if(!is.null(exposures)) exposures <- .extract(as.matrix(exposures),rows=limx[1]:limx[2], columns=limy[1]:limy[2],byage=TRUE)
   transformation <- match.arg(transformation)
   bwtypex <- match.arg(bwtypex)
   bwtypey <- match.arg(bwtypey)
@@ -333,7 +333,7 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
   .residuals.density.plot(res,xlab=ylab,col=col,...)
 }
 
-.residualsVsFitted.mat.plot <- function(x,rows,columns,byage,logscale,alphares,restype,xlab="fitted values",ylab=paste(restype, "residuals"),col,...)    
+.residualsVsFitted.mat.plot <- function(x,rows,columns,byage,logscale,alphares,restype,xlab="fitted values",ylab=paste(restype, "residuals"),col,mar=c(5, 4, 4, 1) + 0.1,cex.axis=0.8,cex=0.8,...)
 {
   res    <- as.vector(.extract(mat=residuals(x, type=restype),rows, columns,byage))
   fitted <- as.vector(.extract(mat=x$fitted.values,rows, columns,byage))
@@ -346,7 +346,7 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
   }
   aty <- round(seq(min(res),max(res),length.out =5),digits=5)
   layout(cbind(1,1))
-  par(mar=c(5, 4, 4, 1) + 0.1,cex.axis=0.8,cex=0.8)
+  par(mar=mar,cex.axis=cex.axis,cex=cex)
   matplot(y=res,x=fitted,xlab=xlab,ylab=ylab,type="h",axes = FALSE,col=col,...) #
   axis(1,at = atx,labels = xlabels)
   axis(2, at = aty, labels =aty )
@@ -419,7 +419,7 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
   }
 }
   
-.obsfit.mat.plot<- function(x,rows,columns,byage,logscale,alphares,restype,xlab,ylab,col,pch,lwd=1,legend,type="p",...)
+.obsfit.mat.plot<- function(x,rows,columns,byage,logscale,alphares,restype,xlab,ylab,col,pch,lwd=1,legend,type="p",mar=c(5, 4, 4, 1) + 0.1,cex.axis=0.8,cex=0.8,...)
 {
   if(missing(ylab)) ylab <- "mortality rates"
   if (!byage) {
@@ -453,7 +453,7 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
   par(mar=c(0, 0, 0, 0))
   plot.new()
   legend("left", legend=legend, col=col, pch=pch, h=FALSE,cex=0.8, bty="n",inset=c(0,0)) 
-  par(mar=c(5, 4, 4, 1) + 0.1,cex.axis=0.8,cex=0.8)
+  par(mar=mar,cex.axis=cex.axis,cex=cex)
   matplot(y=y,x=as.numeric(rownames(y)),pch=pch,xlab=xlab,ylab=ylab, col=col,type=type,axes = FALSE,...) #
   axis(1,at = as.numeric(rownames(y)),labels = round(as.numeric(rownames(y))))
   axis(2,at = yat, labels = round(ylabels,digits=5))
@@ -471,7 +471,7 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
 }
 
 .mat.plot<- function(mat,x,rows,columns,byage,logscale,alphares,restype,xlab,ylab,
-                     col,lwd=1,pch=16,legend,at,by,type,xlabels,ylabels,yat,...)
+                     col,lwd=1,pch=16,legend,at,by,type,xlabels,ylabels,yat,mar=c(5, 4, 4, 1) + 0.1,cex.axis=0.8,cex=0.8,...)
 {
   y <- mat[rows,columns]
   if (length(rows)==1) byage <- FALSE
@@ -508,7 +508,7 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
   if(missing(legend)) legend <- colnames(y)
   if (missing(xlabels)) xlabels <- round(as.numeric(rownames(y)),digits=3)
   legend("left", legend=legend, col=col, pch=pch, h=FALSE,cex=0.8, bty="n",inset=c(0,0)) 
-  par(mar=c(5, 4, 4, 1) + 0.1,cex.axis=0.8,cex=0.8)
+  par(mar=mar,cex.axis=cex.axis,cex=cex)
   matplot(y=y,x=as.numeric(rownames(y)),pch=pch,xlab=xlab,ylab=ylab, col=col,type=type,axes = FALSE,lwd=lwd,...) #
   axis(1,at = as.numeric(rownames(y)),labels = xlabels)
   axis(2,at = yat, labels = ylabels)
@@ -568,14 +568,14 @@ plot.dbkGrad <- function(x, plottype=c("obsfit","fitted", "observed", "exposure"
                        z,rows,columns,byage,logscale,alphares,restype,
                        theta=-30,col,pch=20,cex=0.6,lwd=2,
                        zlab="mortality rates",ylab="years",xlab ="age",legend,axes=TRUE, box=TRUE,border=FALSE,
-                       segments=FALSE,xlim=range(x),ylim=range(y),zlim=range(z),ticktype="detailed",...){
+                       segments=FALSE,xlim=range(x),ylim=range(y),zlim=range(z),ticktype="detailed",mar=c(5, 4, 4, 1) + 0.1,cex.axis=0.8,...){
   if(logscale) {
     z <- log(z)
     zlab <- paste(zlab,"(log scale)")
   }
   if (missing(col)) col <- 1:ncol(z)
   else col <- rep(col, ncol(z))
-  par(mar=c(5, 4, 4, 1) + 0.1,cex.axis=0.8,cex=0.8)
+  par(mar=mar,cex.axis=cex.axis,cex=cex)
  # plot.new()
   persp(x=x[,1], y=y[1,], z=z,
         xlab = xlab,

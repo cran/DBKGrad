@@ -1,0 +1,20 @@
+citHeader("To cite DBKGrad in publications use:")
+
+citEntry(entry = "Article",
+  title        = "{DBKGrad}: An {R} Package for Mortality Rates Graduation by Discrete Beta Kernel Techniques",
+  author       = personList(as.person("Angelo Mazza"),
+                   as.person("Antonio Punzo")),
+  journal      = "Journal of Statistical Software, Code Snippets",
+  year         = "2014",
+  volume       = "57",
+  number       = "2",
+  pages        = "1--18",
+  url          = "http://www.jstatsoft.org/v57/c02/",
+
+  textVersion  =
+  paste("Angelo Mazza, Antonio Punzo (2014).",
+        "DBKGrad: An R Package for Mortality Rates Graduation by Discrete Beta Kernel Techniques.",
+        "Journal of Statistical Software, Code Snippets, 57(2), 1-18.",
+        "URL http://www.jstatsoft.org/v57/c02/.")
+)
+

@@ -126,6 +126,8 @@ Mazza A, Punzo A (2013a) Graduation by Adaptive Discrete Beta Kernels. In A Gius
 
 Mazza A, Punzo A (2013b) Using the Variation Coefficient for Adaptive Discrete Beta Kernel Graduation. In P Giudici, S Ingrassia, M Vichi (eds.), \emph{Advances in Statistical Modelling for Data Analysis, Studies in Classification, Data Analysis and Knowledge Organization}, pp. 225-232, Springer International Publishing, Switzerland.
 
+Mazza A, Punzo A (2014) DBKGrad: An R Package for Mortality Rates Graduation by Discrete Beta Kernel Techniques. \emph{Journal of Statistical Software, Code Snippets}, \bold{57}{2}, 1-18.
+
 More J (1978) The Levenberg-Marquardt Algorithm: Implementation and Theory. In G Watson (ed.), \emph{Numerical Analysis}, volume \bold{630} of \emph{Lecture Notes in Mathematics}, pp. 104-116. Springer- Verlag, Berlin-Heidelberg.
 
 Punzo A (2010) Discrete Beta-type Models. In H Locarek-Junge, C Weihs (eds.), \emph{Classification as a Tool for Research}, \emph{Studies in Classification, Data Analysis and Knowledge Organization}, pp. 253-261. Springer-Verlag, Berlin-Heidelberg.

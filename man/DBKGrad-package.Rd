@@ -3,14 +3,14 @@
 \docType{package}
 \title{DBKGrad - Discrete Beta Kernel Graduation}
 \description{
-This package allows for nonparametric graduation of mortality rates using the discrete beta kernel estimator in both its fixed (Mazza and Punzo, 2011) and adaptive (Mazza and Punzo, 2013, in press) variants.
+This package allows for nonparametric graduation of mortality rates using the discrete beta kernel estimator in both its fixed (Mazza and Punzo, 2011) and adaptive (Mazza and Punzo, 2013a, 2013b) variants.
 }
 \details{
 \tabular{ll}{
 Package: \tab DBKGrad\cr
 Type: \tab Package\cr
-Version: \tab 1.4\cr
-Date: \tab 2013-08-22\cr
+Version: \tab 1.5\cr
+Date: \tab 2014-04-08\cr
 License: \tab GNU-2\cr
 }
 }
@@ -24,6 +24,8 @@ Mazza A, Punzo A (2011) Discrete Beta Kernel Graduation of Age-Specific Demograp
 Mazza A, Punzo A (2013a) Graduation by Adaptive Discrete Beta Kernels. In A Giusti, G Ritter, M Vichi (eds.), \emph{Classification and Data Mining}, \emph{Studies in Classification, Data Analysis and Knowledge Organization}, pp. 77-84. Springer-Verlag, Berlin-Heidelberg.
 
 Mazza A, Punzo A (2013b) Using the Variation Coefficient for Adaptive Discrete Beta Kernel Graduation. In P Giudici, S Ingrassia, M Vichi (eds.), \emph{Advances in Statistical Modelling for Data Analysis, Studies in Classification, Data Analysis and Knowledge Organization}, pp. 225-232, Springer International Publishing, Switzerland.
+
+Mazza A, Punzo A (2014) DBKGrad: An R Package for Mortality Rates Graduation by Discrete Beta Kernel Techniques. \emph{Journal of Statistical Software, Code Snippets}, \bold{57}{2}, 1-18.
 
 More J (1978) The Levenberg-Marquardt Algorithm: Implementation and Theory. In G Watson (ed.), \emph{Numerical Analysis}, volume \bold{630} of \emph{Lecture Notes in Mathematics}, pp. 104-116. Springer- Verlag, Berlin-Heidelberg.
 
