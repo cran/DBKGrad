@@ -9,8 +9,8 @@ This package allows for nonparametric graduation of mortality rates using the di
 \tabular{ll}{
 Package: \tab DBKGrad\cr
 Type: \tab Package\cr
-Version: \tab 1.5\cr
-Date: \tab 2014-04-08\cr
+Version: \tab 1.6\cr
+Date: \tab 2014-10-24\cr
 License: \tab GNU-2\cr
 }
 }

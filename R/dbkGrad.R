@@ -205,9 +205,9 @@ residuals.dbkGrad <- function(object,type=c("working","proportional","response",
   res <- switch(type,
                 working = o - f,
                 proportional= (o/f)-1,
-                response= e*(o - f),
+                response= (o - f)*e,
                 deviance=sign(o - f) * sqrt(2*e*o*log(ifelse(o == 0, 1,o/f)) +2*e*(1-o)* log(ifelse(o==1,0,(1-o)/(1-f)))),
-                pearson =e*(o - f)/sqrt(e*f*(1-f))
+                pearson =(o - f)*e/sqrt(e*f*(1-f))
   )
   as.matrix(res)
 }
