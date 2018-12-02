@@ -2,10 +2,15 @@ exportPattern("^[[:alpha:]]+")
 S3method(plot, dbkGrad)
 S3method(print, dbkGrad)
 S3method(residuals, dbkGrad)
+S3method(as.data.frame, dbkGrad)
 
+importFrom("stats", "dbeta", "density", "qnorm", "quantile",
+     "residuals")
 importFrom(minpack.lm,nls.lm.control,nls.lm)
 importFrom(SDD,ADF)
 importFrom(TSA, acf)
 
 importFrom(lattice,levelplot)
-
+importFrom("grDevices", "trans3d")
+importFrom("graphics", "abline", "axis", "layout", "matplot", "par",
+             "persp", "plot", "plot.new", "points", "segments")
